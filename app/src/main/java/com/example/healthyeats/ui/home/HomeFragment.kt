@@ -98,7 +98,7 @@ class HomeFragment : Fragment() {
                         binding.konsumsiKalori.text = consumeCalories.toString()
                     }
                     response.onFailure {
-                        Toast.makeText(requireContext(), "Gagal mengambil data", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(requireContext(), "Plan belum dibuat", Toast.LENGTH_SHORT).show()
                         Log.d("Gagal", consumeCalories.toString())
                     }
                 }

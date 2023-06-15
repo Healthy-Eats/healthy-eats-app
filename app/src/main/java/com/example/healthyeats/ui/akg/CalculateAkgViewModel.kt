@@ -18,7 +18,7 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @HiltViewModel
-class CalculateAkgViewModel @Inject constructor(private val loginRepository: LoginRepository, private val readPlanRepository: ReadPlanRepository, private val updatePlanRepository: UpdatePlanRepository, private val readUserRepository: ReadUserRepository) : ViewModel() {
+class CalculateAkgViewModel @Inject constructor(private val loginRepository: LoginRepository, private val readPlanRepository: ReadPlanRepository, private val updatePlanRepository: UpdatePlanRepository, private val readUserRepository: ReadUserRepository, private val createPlanRepository: CreatePlanRepository) : ViewModel() {
 
     private var targetCallories : Float = 0.0F
 
@@ -117,5 +117,96 @@ class CalculateAkgViewModel @Inject constructor(private val loginRepository: Log
         Log.d("ViewDATA", targetCallories.toString())
 
         return updatePlanRepository.updatePlan(token, planName, planGoal, planActivity, targetCallories.toInt())
+    }
+
+    suspend fun createPlan(token: String, planName: String, planGoal: String, planActivity: String, gender: String, weight: Int, height: Int, age: Int) : Flow<Result<CreatePlanResponse>> {
+        val activityLess = 1.2
+        val activityLessBit = 1.375
+        val activityActive = 1.55
+        val activityVeryActive = 1.725
+
+        if (gender == "MALE"){
+            when(planGoal){
+                "Menaikkan Berat Badan" -> {
+                    when(planActivity){
+                        "Sangat Aktif" ->{
+                            targetCallories = ((66.5 + (13.75 * weight) + (5 * height) - (6.75 * age) ) * activityVeryActive).toFloat()
+                        }
+                        "Aktif" ->{
+                            targetCallories = ((66.5 + (13.75 * weight) + (5 * height) - (6.75 * age) ) * activityActive).toFloat()
+                        }
+                        "Sedikit Aktif" ->{
+                            targetCallories = ((66.5 + (13.75 * weight) + (5 * height) - (6.75 * age) ) * activityLessBit).toFloat()
+                        }
+                        "Jarang Aktif" ->{
+                            targetCallories = ((66.5 + (13.75 * weight) + (5 * height) - (6.75 * age) ) * activityLess).toFloat()
+                        }
+                    }
+
+                    targetCallories += 500
+                }
+                "Menurunkan Berat Badan" -> {
+                    when(planActivity){
+                        "Sangat Aktif" ->{
+                            targetCallories = ((66.5 + (13.75 * weight) + (5 * height) - (6.75 * age) ) * activityVeryActive).toFloat()
+                        }
+                        "Aktif" ->{
+                            targetCallories = ((66.5 + (13.75 * weight) + (5 * height) - (6.75 * age) ) * activityActive).toFloat()
+                        }
+                        "Sedikit Aktif" ->{
+                            targetCallories = ((66.5 + (13.75 * weight) + (5 * height) - (6.75 * age) ) * activityLessBit).toFloat()
+                        }
+                        "Jarang Aktif" ->{
+                            targetCallories = ((66.5 + (13.75 * weight) + (5 * height) - (6.75 * age) ) * activityLess).toFloat()
+                        }
+                    }
+
+                    targetCallories -= 500
+                }
+            }
+        }else if (gender == "FEMALE"){
+            when(planGoal){
+                "Menaikkan Berat Badan" -> {
+                    when(planActivity){
+                        "Sangat Aktif" ->{
+                            targetCallories = ((655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age) ) * activityVeryActive).toFloat()
+                        }
+                        "Aktif" ->{
+                            targetCallories = ((655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age) ) * activityActive).toFloat()
+                        }
+                        "Sedikit Aktif" ->{
+                            targetCallories = ((655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age) ) * activityLessBit).toFloat()
+                        }
+                        "Jarang Aktif" ->{
+                            targetCallories = ((655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age) ) * activityLess).toFloat()
+                        }
+                    }
+
+                    targetCallories += 500
+                }
+                "Menurunkan Berat Badan" -> {
+                    when(planActivity){
+                        "Sangat Aktif" ->{
+                            targetCallories = ((655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age) ) * activityVeryActive).toFloat()
+                        }
+                        "Aktif" ->{
+                            targetCallories = ((655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age) ) * activityActive).toFloat()
+                        }
+                        "Sedikit Aktif" ->{
+                            targetCallories = ((655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age) ) * activityLessBit).toFloat()
+                        }
+                        "Jarang Aktif" ->{
+                            targetCallories = ((655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age) ) * activityLess).toFloat()
+                        }
+                    }
+
+                    targetCallories -= 500
+                }
+            }
+        }
+
+        Log.d("ViewDATA", targetCallories.toString())
+
+        return createPlanRepository.createPlan(token, planName, planGoal, planActivity, targetCallories.toInt())
     }
 }

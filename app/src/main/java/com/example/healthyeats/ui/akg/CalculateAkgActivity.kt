@@ -32,6 +32,7 @@ class CalculateAkgActivity : AppCompatActivity() {
     private var planName: String = ""
     private var planGoal: String = ""
     private var planActivity: String = ""
+    private var targetCalories: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +50,8 @@ class CalculateAkgActivity : AppCompatActivity() {
         setView()
         setUserData()
         setPrePlanData()
-        setNewAkg()
+        setAkg()
+
     }
 
     private fun setView() {
@@ -77,11 +79,11 @@ class CalculateAkgActivity : AppCompatActivity() {
                         gender = it.data?.user_gender.toString()
                     }
                     response.onFailure {
-                        Toast.makeText(
-                            this@CalculateAkgActivity,
-                            "Gagal mengambil data User",
-                            Toast.LENGTH_SHORT
-                        ).show()
+//                        Toast.makeText(
+//                            this@CalculateAkgActivity,
+//                            "Gagal mengambil data User",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
                         Log.d("Gagal", "Gagal mengambil data User")
                     }
                 }
@@ -94,15 +96,16 @@ class CalculateAkgActivity : AppCompatActivity() {
             launch {
                 viewModel.readPlan(token).collect{ response ->
                     response.onSuccess {
+                        targetCalories = it.data?.plan?.calories_target  ?:0
                         planName = it.data?.plan?.plan_name.toString()
                         binding.edtPlan.setText(planName)
                     }
                     response.onFailure {
-                        Toast.makeText(
-                            this@CalculateAkgActivity,
-                            "Gagal mengambil data Plan",
-                            Toast.LENGTH_SHORT
-                        ).show()
+//                        Toast.makeText(
+//                            this@CalculateAkgActivity,
+//                            "Gagal mengambil data Plan",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
                         Log.d("Gagal", "Gagal mengambil data Plan")
                     }
                 }
@@ -110,45 +113,89 @@ class CalculateAkgActivity : AppCompatActivity() {
         }
     }
 
-    fun setNewAkg(){
+    fun setAkg(){
         binding.btnHitung.setOnClickListener{
-            planName = binding.edtPlan.text.toString()
+            if (targetCalories == 0){
+                planName = binding.edtPlan.text.toString()
 
-            if (binding.rbNaik.isChecked){
-                planGoal = "Menaikkan Berat Badan"
-            } else if (binding.rbTurun.isChecked){
-                planGoal = "Menurunkan Berat Badan"
-            }
+                if (binding.rbNaik.isChecked){
+                    planGoal = "Menaikkan Berat Badan"
+                } else if (binding.rbTurun.isChecked){
+                    planGoal = "Menurunkan Berat Badan"
+                }
 
-            if (binding.rbVeryActive.isChecked){
-                planActivity = "Sangat Aktif"
-            } else if (binding.rbActive.isChecked){
-                planActivity = "Aktif"
-            } else if (binding.rbActiveBit.isChecked){
-                planActivity = "Sedikit Aktif"
-            } else if (binding.rbLessActive.isChecked){
-                planActivity = "Jarang Aktif"
-            }
+                if (binding.rbVeryActive.isChecked){
+                    planActivity = "Sangat Aktif"
+                } else if (binding.rbActive.isChecked){
+                    planActivity = "Aktif"
+                } else if (binding.rbActiveBit.isChecked){
+                    planActivity = "Sedikit Aktif"
+                } else if (binding.rbLessActive.isChecked){
+                    planActivity = "Jarang Aktif"
+                }
 
 
-            lifecycleScope.launchWhenResumed {
-                launch {
-                    viewModel.updatePlan(token, planName, planGoal, planActivity, gender, weight.toInt(), height.toInt(), age.toInt()).collect{ response ->
-                        response.onSuccess {
-                            Toast.makeText(this@CalculateAkgActivity,
-                                it.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            startActivity(Intent(this@CalculateAkgActivity, MainActivity::class.java))
-                            Log.d("DATA", planName + " " + planGoal + " " + planActivity + " " + gender + " " + weight + " " + height + " " + age)
+                lifecycleScope.launchWhenResumed {
+                    launch {
+                        viewModel.createPlan(token, planName, planGoal, planActivity, gender, weight.toInt(), height.toInt(), age.toInt()).collect{ response ->
+                            response.onSuccess {
+                                Toast.makeText(this@CalculateAkgActivity,
+                                    it.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                startActivity(Intent(this@CalculateAkgActivity, MainActivity::class.java))
+                                Log.d("DATA", planName + " " + planGoal + " " + planActivity + " " + gender + " " + weight + " " + height + " " + age)
+                            }
+
+                            response.onFailure {
+                                Toast.makeText(this@CalculateAkgActivity,
+                                    "Gagal membuat plan " + planName,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Log.d("Gagal membuat plan ", planName)
+                            }
                         }
+                    }
+                }
+            } else{
+                planName = binding.edtPlan.text.toString()
 
-                        response.onFailure {
-                            Toast.makeText(this@CalculateAkgActivity,
-                                "Gagal mengambil data " + planName,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            Log.d("Gagal mengambil data ", planName)
+                if (binding.rbNaik.isChecked){
+                    planGoal = "Menaikkan Berat Badan"
+                } else if (binding.rbTurun.isChecked){
+                    planGoal = "Menurunkan Berat Badan"
+                }
+
+                if (binding.rbVeryActive.isChecked){
+                    planActivity = "Sangat Aktif"
+                } else if (binding.rbActive.isChecked){
+                    planActivity = "Aktif"
+                } else if (binding.rbActiveBit.isChecked){
+                    planActivity = "Sedikit Aktif"
+                } else if (binding.rbLessActive.isChecked){
+                    planActivity = "Jarang Aktif"
+                }
+
+
+                lifecycleScope.launchWhenResumed {
+                    launch {
+                        viewModel.updatePlan(token, planName, planGoal, planActivity, gender, weight.toInt(), height.toInt(), age.toInt()).collect{ response ->
+                            response.onSuccess {
+                                Toast.makeText(this@CalculateAkgActivity,
+                                    it.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                startActivity(Intent(this@CalculateAkgActivity, MainActivity::class.java))
+                                Log.d("DATA", planName + " " + planGoal + " " + planActivity + " " + gender + " " + weight + " " + height + " " + age)
+                            }
+
+                            response.onFailure {
+                                Toast.makeText(this@CalculateAkgActivity,
+                                    "Gagal membuat plan " + planName,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Log.d("Gagal membuat plan ", planName)
+                            }
                         }
                     }
                 }
