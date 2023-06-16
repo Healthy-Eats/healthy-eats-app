@@ -63,23 +63,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvGoal">
 
-        <LinearLayout
+        <RadioButton
+            android:id="@+id/rbNaik"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <RadioButton
-                android:id="@+id/rbNaik"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Menaikkan Berat Badan" />
+            android:text="Menaikkan Berat Badan" />
 
-            <RadioButton
-                android:id="@+id/rbTurun"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Menurunkan Berat Badan"
-                />
-        </LinearLayout>
+        <RadioButton
+            android:id="@+id/rbTurun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Menurunkan Berat Badan" />
+
     </RadioGroup>
 
     <TextView
@@ -103,34 +98,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvActivity">
 
-        <LinearLayout
+        <RadioButton
+            android:id="@+id/rbVeryActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <RadioButton
-                android:id="@+id/rbVeryActive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sangat Aktif" />
+            android:text="Sangat Aktif" />
 
-            <RadioButton
-                android:id="@+id/rbActive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Aktif" />
+        <RadioButton
+            android:id="@+id/rbActive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aktif" />
 
-            <RadioButton
-                android:id="@+id/rbActiveBit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sedikit Aktif" />
+        <RadioButton
+            android:id="@+id/rbActiveBit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sedikit Aktif" />
 
-            <RadioButton
-                android:id="@+id/rbLessActive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Jarang Aktif" />
-        </LinearLayout>
+        <RadioButton
+            android:id="@+id/rbLessActive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jarang Aktif" />
+
     </RadioGroup>
 
     <Button

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -68,18 +69,12 @@ class ChangeDataActivity : AppCompatActivity() {
                         age = it.data?.user_age.toString()
                         weight = it.data?.user_weight.toString()
                         height = it.data?.user_height.toString()
-                        gender = it.data?.user_gender.toString()
 
                         binding.edtNama.setText(name)
                         binding.edtUsia.setText(age)
                         binding.edtBerat.setText(weight)
                         binding.edtTinggi.setText(height)
 
-                        if (gender == "MALE"){
-                            binding.rbLaki.setChecked(true)
-                        } else if (gender == "FEMALE"){
-                            binding.rbPerempuan.setChecked(true)
-                        }
                     }
                     response.onFailure {
                         Toast.makeText(this@ChangeDataActivity,
@@ -94,15 +89,19 @@ class ChangeDataActivity : AppCompatActivity() {
     }
 
     private fun updateUser(){
+
         binding.btnSave.setOnClickListener{
             name = binding.edtNama.text.toString()
             age = binding.edtUsia.text.toString()
             weight = binding.edtBerat.text.toString()
             height = binding.edtTinggi.text.toString()
 
-            if (binding.rbLaki.isChecked){
+            val selectedGender : Int = binding.rbGroup.checkedRadioButtonId
+            val btn = findViewById<RadioButton>(selectedGender)
+
+            if (btn.text == "Laki-laki"){
                 gender = "MALE"
-            } else if (binding.rbPerempuan.isChecked){
+            } else if (btn.text == "Perempuan"){
                 gender = "FEMALE"
             }
 

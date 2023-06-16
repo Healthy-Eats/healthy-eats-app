@@ -10,6 +10,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -79,11 +80,6 @@ class CalculateAkgActivity : AppCompatActivity() {
                         gender = it.data?.user_gender.toString()
                     }
                     response.onFailure {
-//                        Toast.makeText(
-//                            this@CalculateAkgActivity,
-//                            "Gagal mengambil data User",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
                         Log.d("Gagal", "Gagal mengambil data User")
                     }
                 }
@@ -101,11 +97,6 @@ class CalculateAkgActivity : AppCompatActivity() {
                         binding.edtPlan.setText(planName)
                     }
                     response.onFailure {
-//                        Toast.makeText(
-//                            this@CalculateAkgActivity,
-//                            "Gagal mengambil data Plan",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
                         Log.d("Gagal", "Gagal mengambil data Plan")
                     }
                 }
@@ -118,22 +109,32 @@ class CalculateAkgActivity : AppCompatActivity() {
             if (targetCalories == 0){
                 planName = binding.edtPlan.text.toString()
 
-                if (binding.rbNaik.isChecked){
+                val selectedGoal : Int = binding.rbGroupGoal.checkedRadioButtonId
+                val btnGoal = findViewById<RadioButton>(selectedGoal)
+
+                if (btnGoal.text == "Menaikkan Berat Badan"){
                     planGoal = "Menaikkan Berat Badan"
-                } else if (binding.rbTurun.isChecked){
+                } else if (btnGoal.text == "Menurunkan Berat Badan"){
                     planGoal = "Menurunkan Berat Badan"
                 }
 
-                if (binding.rbVeryActive.isChecked){
-                    planActivity = "Sangat Aktif"
-                } else if (binding.rbActive.isChecked){
-                    planActivity = "Aktif"
-                } else if (binding.rbActiveBit.isChecked){
-                    planActivity = "Sedikit Aktif"
-                } else if (binding.rbLessActive.isChecked){
-                    planActivity = "Jarang Aktif"
-                }
+                val selectedActivity : Int = binding.rbGroupActivity.checkedRadioButtonId
+                val btnActivity = findViewById<RadioButton>(selectedActivity)
 
+                when (btnActivity.text) {
+                    "Sangat Aktif" -> {
+                        planActivity = "Sangat Aktif"
+                    }
+                    "Aktif" -> {
+                        planActivity = "Aktif"
+                    }
+                    "Sedikit Aktif" -> {
+                        planActivity = "Sedikit Aktif"
+                    }
+                    "Jarang Aktif" -> {
+                        planActivity = "Jarang Aktif"
+                    }
+                }
 
                 lifecycleScope.launchWhenResumed {
                     launch {
